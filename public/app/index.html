@@ -1,0 +1,179 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Packages</title>
+<style>
+:root{--bg:#f5f6f2;--card:#fff;--ink:#1c2420;--mut:#667068;--line:#e2e6df;--acc:#0a7d4f;--acc2:#086641;--ok:#17803d;--bad:#c93232}
+*{box-sizing:border-box}[hidden]{display:none!important}
+body{margin:0;font:15px/1.5 system-ui,"Segoe UI",Roboto,sans-serif;background:var(--bg);color:var(--ink)}
+h1,h2,h3,p{margin:0}h3{font-size:16px}
+button{font:inherit;border:0;border-radius:8px;padding:9px 16px;background:var(--acc);color:#fff;cursor:pointer;font-weight:600}
+button:hover{background:var(--acc2)}button:disabled{background:var(--line);color:var(--mut);cursor:not-allowed}
+button.ghost{background:transparent;color:var(--ink);border:1px solid var(--line)}button.ghost:hover{background:var(--bg)}
+button:focus-visible,input:focus-visible,a:focus-visible{outline:2px solid var(--acc);outline-offset:2px}
+label{display:block;margin-bottom:12px;color:var(--mut);font-size:14px}
+input{display:block;width:100%;margin-top:4px;padding:10px 12px;border:1px solid var(--line);border-radius:8px;font:inherit;color:var(--ink);background:#fff}
+.mut{color:var(--mut)}.err{color:var(--bad);min-height:22px;font-size:14px}.ok{color:var(--ok)}
+#auth{min-height:100vh;display:grid;place-items:center;padding:16px}
+#af{width:min(400px,100%);background:var(--card);padding:28px;border-radius:14px;border:1px solid var(--line)}
+#af h1{font-size:22px;margin-bottom:4px}#af .mut{margin-bottom:20px}#af button[type=submit]{width:100%}
+.swap{margin-top:14px;text-align:center;font-size:14px}.swap a{color:var(--acc);cursor:pointer;font-weight:600}
+header{background:var(--card);border-bottom:1px solid var(--line);position:sticky;top:0;z-index:5}
+.top{max-width:980px;margin:0 auto;padding:12px 16px;display:flex;align-items:center;gap:12px}
+.brand{font-weight:700;font-size:17px;flex:1}.chip{background:#e6f4ec;color:var(--acc2);padding:6px 12px;border-radius:99px;font-weight:600}
+nav{max-width:980px;margin:0 auto;padding:0 16px;display:flex;gap:4px;overflow-x:auto}
+nav button{background:transparent;color:var(--mut);border-radius:0;border-bottom:3px solid transparent;padding:10px 14px}
+nav button.on{color:var(--acc);border-color:var(--acc)}nav button:hover{background:transparent;color:var(--ink)}
+main{max-width:980px;margin:0 auto;padding:20px 16px 60px}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:16px}
+.pkg,.card{background:var(--card);border:1px solid var(--line);border-radius:12px;overflow:hidden}
+.card{padding:18px}.pkg .img{aspect-ratio:4/3;background:linear-gradient(135deg,#d9efe3,#b9dcc9);display:grid;place-items:center;font-size:44px;font-weight:700;color:var(--acc2)}
+.pkg img{width:100%;height:100%;object-fit:cover;display:block}
+.pkg .body{padding:14px;display:flex;flex-direction:column;gap:6px}.pkg .body p{min-height:22px;font-size:14px}
+.foot{display:flex;justify-content:space-between;align-items:center;margin-top:6px}.foot b{font-size:18px}
+.two{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:16px;margin-bottom:20px}
+.bal{font-size:30px;font-weight:700;margin:4px 0 0}
+.list{background:var(--card);border:1px solid var(--line);border-radius:12px}
+.item{display:flex;justify-content:space-between;gap:12px;padding:12px 16px;border-bottom:1px solid var(--line)}.item:last-child{border:0}
+.item small{display:block;color:var(--mut)}.item .r{text-align:right}
+.pill{padding:2px 9px;border-radius:99px;background:var(--bg);font-size:12px}
+.pill.approved,.pill.paid{background:#e3f6ea;color:var(--ok)}.pill.failed,.pill.rejected{background:#fbe8e8;color:var(--bad)}.pill.pending,.pill.processing{background:#fdf3d9;color:#9a6a00}
+h2{font-size:18px;margin:6px 0 12px}.empty{text-align:center;color:var(--mut);padding:40px 0}
+dialog{border:0;border-radius:14px;padding:24px;width:min(400px,92vw)}dialog::backdrop{background:rgba(15,25,20,.45)}
+.row{display:flex;justify-content:flex-end;gap:8px}
+#toast{position:fixed;left:50%;bottom:24px;transform:translateX(-50%);background:var(--ink);color:#fff;padding:10px 18px;border-radius:99px;z-index:20}
+</style>
+</head>
+<body>
+<div id="auth" hidden>
+  <form id="af">
+    <h1 id="at">Welcome back</h1><p class="mut" id="as">Sign in to buy packages</p>
+    <label id="nl" hidden>Full name<input name="name" autocomplete="name"></label>
+    <label>Phone number<input name="phone" type="tel" placeholder="07XX XXX XXX" autocomplete="tel" required></label>
+    <label>Password<input name="password" type="password" minlength="8" autocomplete="current-password" required></label>
+    <p class="err" id="ae"></p>
+    <button type="submit" id="ab">Sign in</button>
+    <p class="swap" id="aw"></p>
+  </form>
+</div>
+<div id="app" hidden>
+  <header>
+    <div class="top"><span class="brand">Packages</span><span class="chip" id="bal">KES 0.00</span><button class="ghost" id="out">Sign out</button></div>
+    <nav id="nav"></nav>
+  </header>
+  <main id="view"></main>
+</div>
+<dialog id="dlg"></dialog>
+<div id="toast" hidden></div>
+<script>
+const API = window.API_BASE || ""; // set window.API_BASE = "https://your-backend" if hosting this page elsewhere
+const $ = s => document.querySelector(s);
+const esc = v => String(v ?? "").replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+const kes = n => "KES " + Number(n || 0).toLocaleString("en-KE", { maximumFractionDigits: 2 });
+const when = t => new Date(t.replace(" ", "T") + "Z").toLocaleString("en-KE", { dateStyle: "medium", timeStyle: "short" });
+let token = localStorage.getItem("tk"), mode = "login", tab = "packages", me, cfg = {}, products = [];
+
+async function api(p, o = {}) {
+  const r = await fetch(API + "/v1" + p, { ...o, headers: { "Content-Type": "application/json", ...(token && { Authorization: "Bearer " + token }) }, body: o.body && JSON.stringify(o.body) });
+  const d = await r.json().catch(() => ({}));
+  if (r.status === 401 && token) { logout(); throw new Error("Please sign in again"); }
+  if (!r.ok) throw new Error(d.error || "Something went wrong, please try again");
+  return d;
+}
+function toast(m) { const t = $("#toast"); t.textContent = m; t.hidden = false; clearTimeout(toast.h); toast.h = setTimeout(() => t.hidden = true, 3500); }
+
+// ---- auth
+function setMode(m) {
+  mode = m; const reg = m == "register";
+  $("#at").textContent = reg ? "Create your account" : "Welcome back"; $("#as").textContent = reg ? "Join to start buying packages" : "Sign in to buy packages";
+  $("#nl").hidden = !reg; $("#ab").textContent = reg ? "Create account" : "Sign in"; $("#ae").textContent = "";
+  $("#af").password.autocomplete = reg ? "new-password" : "current-password";
+  $("#aw").innerHTML = reg ? 'Already have an account? <a href="#" data-m="login">Sign in</a>' : 'New here? <a href="#" data-m="register">Create an account</a>';
+}
+$("#aw").onclick = e => { if (e.target.dataset.m) { e.preventDefault(); setMode(e.target.dataset.m); } };
+$("#af").onsubmit = async e => {
+  e.preventDefault(); const f = e.target, btn = $("#ab"); btn.disabled = true; $("#ae").textContent = "";
+  try {
+    const body = { phone: f.phone.value, password: f.password.value }; if (mode == "register") body.name = f.name.value;
+    const d = await api("/auth/" + mode, { method: "POST", body });
+    token = d.token; localStorage.setItem("tk", token); f.reset(); await start();
+  } catch (x) { $("#ae").textContent = x.message; } finally { btn.disabled = false; }
+};
+function logout() { localStorage.removeItem("tk"); token = me = null; show(); }
+$("#out").onclick = logout;
+function show() { $("#auth").hidden = !!token; $("#app").hidden = !token; if (!token) setMode(mode); }
+
+// ---- app shell
+const TABS = [["packages", "Packages"], ["wallet", "Wallet"], ["orders", "My orders"]];
+function go(t) { tab = t; $("#nav").innerHTML = TABS.map(([k, l]) => `<button data-t="${k}" class="${k == tab ? "on" : ""}">${l}</button>`).join(""); render(); }
+$("#nav").onclick = e => e.target.dataset.t && go(e.target.dataset.t);
+async function refresh() { me = await api("/me"); $("#bal").textContent = kes(me.balance); await render(); }
+function render() { $("#view").innerHTML = '<p class="empty">Loading…</p>'; return ({ packages, wallet, orders })[tab]().catch(x => $("#view").innerHTML = `<p class="empty">${esc(x.message)}</p>`); }
+async function start() { show(); try { cfg = await api("/config"); me = await api("/me"); $("#bal").textContent = kes(me.balance); go(tab); } catch (x) { if (token) $("#view").innerHTML = `<p class="empty">${esc(x.message)}</p>`; } }
+
+// ---- packages
+async function packages() {
+  products = await api("/products");
+  $("#view").innerHTML = products.length ? `<div class="grid">${products.map(p => `<article class="pkg"><div class="img">${p.image ? `<img src="${esc(API + p.image)}" alt="">` : `<span>${esc(p.name[0])}</span>`}</div>
+    <div class="body"><h3>${esc(p.name)}</h3><p class="mut">${esc(p.description || "")}</p><div class="foot"><b>${kes(p.price)}</b>
+    <button data-b="${p.id}" ${p.stock < 1 ? "disabled" : ""}>${p.stock < 1 ? "Sold out" : "Buy"}</button></div></div></article>`).join("")}</div>` : '<p class="empty">No packages available yet. Check back soon.</p>';
+}
+$("#view").onclick = e => { const id = e.target.dataset.b; if (id) buy(products.find(p => p.id == id)); };
+function buy(p) {
+  const d = $("#dlg");
+  d.innerHTML = `<form><h3>${esc(p.name)}</h3><p class="mut" style="margin:4px 0 16px">${kes(p.price)} each · your balance ${kes(me.balance)}</p>
+    <label>Quantity<input name="qty" type="number" min="1" max="${p.stock}" value="1" required></label>
+    <label>Coupon code (optional)<input name="coupon" autocomplete="off"></label><p class="err"></p>
+    <div class="row"><button type="button" class="ghost">Cancel</button><button>Confirm purchase</button></div></form>`;
+  d.querySelector(".ghost").onclick = () => d.close();
+  d.querySelector("form").onsubmit = async e => {
+    e.preventDefault(); const f = e.target, er = d.querySelector(".err");
+    try { await api("/orders", { method: "POST", body: { product_id: p.id, qty: f.qty.value, coupon: f.coupon.value.trim() || undefined } });
+      d.close(); toast("Purchase successful"); tab = "orders"; await refresh(); go("orders"); }
+    catch (x) { er.textContent = /balance/i.test(x.message) ? x.message + " Top up in the Wallet tab." : x.message; }
+  };
+  d.showModal();
+}
+
+// ---- wallet
+async function wallet() {
+  const tx = await api("/transactions"), fee = cfg.withdrawal_fee_pct;
+  $("#view").innerHTML = `<div class="two"><div class="card"><p class="mut">Wallet balance</p><p class="bal">${kes(me.balance)}</p></div>
+    <form class="card" id="dep"><h3>Top up with M-Pesa</h3><label>Amount (KES)<input name="amount" type="number" min="${cfg.min_deposit || 1}" step="1" required></label>
+      <p class="mut" id="dm" style="margin-bottom:10px;min-height:22px">${cfg.deposits_enabled ? "You will get a prompt on " + esc(me.phone) + "." : "Deposits are paused right now."}</p><button ${cfg.deposits_enabled ? "" : "disabled"}>Send M-Pesa prompt</button></form>
+    <form class="card" id="wd"><h3>Withdraw to M-Pesa</h3><label>Amount (KES)<input name="amount" type="number" min="${cfg.min_withdrawal || 1}" max="${cfg.max_withdrawal || ""}" step="1" required></label>
+      <p class="mut" id="wm" style="margin-bottom:10px;min-height:22px">${cfg.withdrawals_enabled ? "Min " + kes(cfg.min_withdrawal) + (fee ? ` · ${fee}% fee` : "") : "Withdrawals are paused right now."}</p><button ${cfg.withdrawals_enabled ? "" : "disabled"}>Request withdrawal</button></form></div>
+    <h2>Transactions</h2>${tx.length ? `<div class="list">${tx.map(t => `<div class="item"><div>${t.type == "deposit" ? "Deposit" : "Withdrawal"}<small>${when(t.created_at)}${t.receipt ? " · " + esc(t.receipt) : ""}</small></div>
+      <div class="r"><b>${t.type == "deposit" ? "+" : "-"}${kes(t.amount)}</b><small><span class="pill ${esc(t.status)}">${esc(t.status)}</span></small></div></div>`).join("")}</div>` : '<p class="empty">No transactions yet.</p>'}`;
+  const submit = (form, path, msgId, ok) => form.onsubmit = async e => {
+    e.preventDefault(); const m = $(msgId), b = form.querySelector("button"); b.disabled = true; m.className = "mut";
+    try { const r = await api(path, { method: "POST", body: { amount: Number(form.amount.value) } }); m.className = "ok"; m.textContent = ok(r); form.reset(); watch(r.id); }
+    catch (x) { m.className = "err"; m.textContent = x.message; } finally { b.disabled = false; }
+  };
+  submit($("#dep"), "/deposits", "#dm", r => r.message);
+  submit($("#wd"), "/withdrawals", "#wm", r => r.status == "pending" ? "Request received. It will be paid after approval." : "Sending to your M-Pesa now.");
+}
+// Check every few seconds until the payment settles, then update the balance
+async function watch(id, n = 0) {
+  if (n > 20) return;
+  await new Promise(r => setTimeout(r, 4000));
+  try { const t = (await api("/transactions")).find(x => x.id == id);
+    if (t && t.status != "pending" && !(t.type == "withdrawal" && t.status == "processing" && n < 3)) { toast(t.status == "approved" ? "Done: " + (t.type == "deposit" ? "deposit received" : "withdrawal sent") : `Transaction ${t.status}`); return refresh(); }
+    if (t && t.type == "withdrawal" && t.status == "pending") return refresh(); // waiting for admin approval
+  } catch {}
+  watch(id, n + 1);
+}
+
+// ---- orders
+async function orders() {
+  const o = await api("/orders");
+  $("#view").innerHTML = o.length ? `<div class="list">${o.map(x => `<div class="item"><div>${esc(x.name || "Package")} × ${x.qty}<small>${when(x.created_at)}</small></div>
+    <div class="r"><b>${kes(x.total)}</b><small><span class="pill ${esc(x.status)}">${esc(x.status)}</span></small></div></div>`).join("")}</div>` : '<p class="empty">You haven’t bought any packages yet.</p>';
+}
+
+start();
+</script>
+</body>
+</html>
